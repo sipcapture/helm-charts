@@ -1,17 +1,19 @@
 apiVersion: v2
-name: monitoring
-version: 0.1.1
+name: sipcapture
+version: 0.1.2
 description: HOMER/SIPCAPTURE stack
-home: https://jambonz.org
+home: https://sipcapture.org
 keywords:
   - voip 
-  - cpaas 
-  - webRTC 
+  - monitoring 
+  - pcap 
   - sip 
   - rtp
 maintainers: 
   - name: Dave Horton
     email: daveh@drachtio.org
+  - name: Lorenzo Mangani
+    email: lorenzo.mangani@gmail.com
 sources: 
-  - https://github.com/jambonz/helm-charts
   - https://github.com/sipcapture/helm-charts
+  - https://github.com/jambonz/helm-charts
