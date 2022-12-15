@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-subnets: {{ toYaml .Values.heplifyServer.annotations.subnets }}
+    service.beta.kubernetes.io/aws-load-balancer-eip-allocations: {{ toYaml .Values.heplifyServer.annotations.eipAllocations }}
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"     
+  labels:
+    service: {{ toYaml .Values.heplifyServer.name }}
+  name: {{ toYaml .Values.heplifyServer.name }}-capture
+  namespace: {{ toYaml .Values.global.nameSpace }}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: 9060-udp
+      port: 9060
+      protocol: UDP
+      targetPort: 9060
+  selector:
+    service: {{ toYaml .Values.heplifyServer.name }}

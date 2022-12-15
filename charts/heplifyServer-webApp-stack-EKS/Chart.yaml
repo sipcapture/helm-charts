@@ -1,0 +1,13 @@
+apiVersion: v2
+name: homer-helm
+version: 0.0.1
+kubeVersion: ">= 1.21.0-0"
+description: Homer helm chart for heplifyServer-webApp stack on EKS
+home: https://sipcapture.org
+keywords:
+  - voip 
+  - monitoring 
+  - pcap 
+  - sip 
+  - rtp
+type: application

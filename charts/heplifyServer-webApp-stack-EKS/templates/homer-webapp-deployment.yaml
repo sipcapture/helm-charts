@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: {{ toYaml .Values.webApp.name }}
+  name: {{ toYaml .Values.webApp.name }}
+  namespace: {{ toYaml .Values.global.nameSpace }}
+spec:
+  replicas: {{ toYaml .Values.replicaCount }}
+  selector:
+    matchLabels:
+      service: {{ toYaml .Values.webApp.name }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ toYaml .Values.webApp.name }}
+        service: {{ toYaml .Values.webApp.name }}
+    spec:
+{{- if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - env:
+            - name: DB_HOST
+              value: {{ toYaml .Values.dataBase.dbhost }}
+            - name: DB_PASS
+              value: {{ toYaml .Values.dataBase.dbPasswd }}
+            - name: DB_USER
+              value: {{ toYaml .Values.dataBase.dbUser }}
+          image: {{ toYaml .Values.webApp.spec.image }}
+          name: {{ toYaml .Values.webApp.name }}
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
