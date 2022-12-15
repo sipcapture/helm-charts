@@ -1,0 +1,47 @@
+replicaCount: 1
+global:
+  nameSpace: homer-helm
+  # Set tolerations and nodeselectors if needed
+  # nodeSelector: 
+  #   role: "monitor"
+  # tolerations:
+  #   - key: "role"
+  #     operator: "Equal"
+  #     value: "monitor"
+  #     effect: "NoSchedule"
+  
+webApp:
+  domainName: www.example-web.com
+  name: homer-webapp
+  annotations:
+    # Specify the certificate ARN for creating ingress
+    certificateArn: arn:aws:acm:<region>:<accountID>:certificate/********-****-****-****-************
+  spec:
+    # Build your own image or use the official image sipcapture/webapp
+    # https://hub.docker.com/r/sipcapture/webapp
+    image: <accountID>.dkr.ecr.<region>.amazonaws.com/<project>/homer-webapp:arm
+
+heplifyServer:
+  name: heplify-server
+  annotations:
+    # Specify subnetID and EIP ID for creating loadbalancer
+    # It is important to specify only one subnet and one EIP
+    # More than one might cause heplify agent failing to send data to heplify server
+    subnets: subnet-*****************
+    eipAllocations: eipalloc-*****************
+  spec:
+    # Build your own image or use the official image sipcapture/heplify-server
+    # https://hub.docker.com/r/sipcapture/heplify-server
+    image: <accountID>.dkr.ecr.<region>.amazonaws.com/<project>/homer-heplify-server:arm
+
+dataBase:
+  # Host format as domainName:portNumber, ex - www.example.com:1234
+  dbhost: www.example-db.com:5432
+  dbUser: homerAdmin
+  dbPasswd: dbPassword
+  dbDriver: postgres
+
+monitorList:
+  # Monitoring target list of ip and friendlyName seperated by comma 
+  ip: 127.0.0.1,192.168.1.1
+  friendlyName: localhost,example-servera
