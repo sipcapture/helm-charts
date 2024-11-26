@@ -3,13 +3,13 @@ grafana:
   hostname:
   storage: 2Gi
 heplifyServer: 
-  image: sipcapture/heplify-server:master
+  image: ghcr.io/sipcapture/heplify-server:latest
 influxdb: 
   image: influxdb:1.8
   loglevel: info
   storage: 10Gi
 homer: 
-  image: sipcapture/webapp:latest
+  image: ghcr.io/sipcapture/homer-app:latest
   hostname:
 postgres: 
   image: postgres:11-alpine
