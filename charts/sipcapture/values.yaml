@@ -1,7 +1,33 @@
 grafana: 
-  image: grafana/grafana-oss:latest 
-  hostname:
-  storage: 2Gi
+  installOnCluster: true
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    path: /grafana/?(.*)
+    hosts:
+      - grafana.domain.com
+  grafana.ini:
+    server:
+      root_url: http://localhost:3000/grafana # this host can be localhost
+    log.console:
+      level: info
+
+  adminUser: admin
+  adminPassword: "admin"
+
+  sidecar:
+    datasources:
+      enabled: true
+    dashboards:
+      enabled: true
+
+  persistence:
+    enabled: true
+    size: 2Gi
+
 heplifyServer: 
   image: ghcr.io/sipcapture/heplify-server:latest
 influxdb: 

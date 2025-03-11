@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homer-grafana-dashboard-config
+  labels:
+    grafana_dashboard: "1"
+data:
+  jambonz-dashboard.json: |-
+    {{ .Files.Get "configs/grafana/dashboards/jambonz-dashboard.json" | nindent 4 }}
+  jambonz-heplify.json: |-
+    {{ .Files.Get "configs/grafana/dashboards/jambonz-heplify.json" | nindent 4 }}
