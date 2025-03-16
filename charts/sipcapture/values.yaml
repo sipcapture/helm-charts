@@ -1,19 +1,14 @@
 grafana: 
   installOnCluster: true
   ingress:
-    enabled: true
+    enabled: true # Disable if ingress controller absent or want to deploy using nodeport service only
     annotations:
       kubernetes.io/ingress.class: "nginx"
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
-      nginx.ingress.kubernetes.io/use-regex: "true"
-    path: /grafana/?(.*)
     hosts:
-      - grafana.domain.com
-  grafana.ini:
-    server:
-      root_url: http://localhost:3000/grafana # this host can be localhost
-    log.console:
-      level: info
+      - grafana.myimaginaryhost.com
+
+  service:
+    type: "NodePort"
 
   adminUser: admin
   adminPassword: "admin"
@@ -36,7 +31,12 @@ influxdb:
   storage: 10Gi
 homer: 
   image: ghcr.io/sipcapture/homer-app:latest
-  hostname:
+  ingress:
+    enabled: true # Disable if ingress controller absent or want to deploy using nodeport service only
+    hostname: webapp.myimaginaryhost.com
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+
 postgres: 
   image: postgres:11-alpine
   storage: 30Gi 
