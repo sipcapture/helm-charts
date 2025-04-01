@@ -1,7 +1,28 @@
 grafana: 
-  image: grafana/grafana-oss:latest 
-  hostname:
-  storage: 2Gi
+  installOnCluster: true
+  ingress:
+    enabled: true # Disable if ingress controller absent or want to deploy using nodeport service only
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+    hosts:
+      - grafana.myimaginaryhost.com
+
+  service:
+    type: "NodePort"
+
+  adminUser: admin
+  adminPassword: "admin"
+
+  sidecar:
+    datasources:
+      enabled: true
+    dashboards:
+      enabled: true
+
+  persistence:
+    enabled: true
+    size: 2Gi
+
 heplifyServer: 
   image: ghcr.io/sipcapture/heplify-server:latest
 influxdb: 
@@ -10,7 +31,12 @@ influxdb:
   storage: 10Gi
 homer: 
   image: ghcr.io/sipcapture/homer-app:latest
-  hostname:
+  ingress:
+    enabled: true # Disable if ingress controller absent or want to deploy using nodeport service only
+    hostname: webapp.myimaginaryhost.com
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+
 postgres: 
   image: postgres:11-alpine
   storage: 30Gi 

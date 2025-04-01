@@ -1,13 +1,18 @@
+{{- if .Values.homer.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: homer-webapp
+  annotations:
+    {{- with .Values.homer.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   namespace: {{ dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) | quote }}
   labels:
 {{ include "common.labels" . | indent 4 }}
 spec:
   rules:
-    - host: {{ required "hostname for the homer portal" .Values.homer.hostname }}
+    - host: {{ required "hostname for the homer portal" .Values.homer.ingress.hostname }}
       http:
         paths:
         - backend:
@@ -17,4 +22,4 @@ spec:
                 number: 80
           path: /
           pathType: Prefix
-
+{{- end }}
