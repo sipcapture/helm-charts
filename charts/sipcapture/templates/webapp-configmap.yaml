@@ -17,22 +17,22 @@ data:
       },
       "database_config": {
         "help": "Settings for PGSQL Database (settings)",
-        "host": "postgres",
+        "host": "postgresql",
         "keepalive": true,
         "name": "homer_config",
         "node": "LocalConfig",
         "pass": "homerSeven",
-        "user": "root"
+        "user": "postgres"
       },
       "database_data": {
         "localnode": {
           "help": "Settings for PGSQL Database (data)",
-          "host": "postgres",
+          "host": "postgresql",
           "keepalive": true,
           "name": "homer_data",
           "node": "LocalNode",
           "pass": "homerSeven",
-          "user": "root"
+          "user": "postgres"
         }
       },
       "decoder_shark": {

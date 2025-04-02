@@ -37,9 +37,14 @@ homer:
     annotations:
       kubernetes.io/ingress.class: "nginx"
 
-postgres: 
-  image: postgres:11-alpine
-  storage: 30Gi 
+postgresql:
+  installOnCluster: true
+  fullnameOverride: "postgresql"
+  auth:
+    postgresPassword: "homerSeven"
+    persistence:
+      size: 30Gi
+
 telegraf: 
   image: telegraf:1.19
 
