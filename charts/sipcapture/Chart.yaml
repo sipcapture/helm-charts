@@ -14,6 +14,7 @@ maintainers:
     email: daveh@drachtio.org
   - name: Lorenzo Mangani
     email: lorenzo.mangani@gmail.com
+
 sources: 
   - https://github.com/sipcapture/helm-charts
   - https://github.com/jambonz/helm-charts
