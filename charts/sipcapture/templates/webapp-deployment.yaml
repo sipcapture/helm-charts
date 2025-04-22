@@ -24,11 +24,11 @@ spec:
           resources: {}
           env:
             - name: DB_HOST
-              value: postgres
+              value: postgresql
             - name: DB_USER
-              value: {{ .Values.postgres.user | quote }}
+              value: postgres
             - name: DB_PASS
-              value: {{ .Values.postgres.password | quote }}
+              value: {{ .Values.postgresql.auth.postgresPassword | quote }}
           volumeMounts:
             - mountPath: /usr/local/homer/etc/webapp_config.json
               name: webapp-conf
