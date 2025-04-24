@@ -23,16 +23,11 @@ spec:
             - containerPort: 80
           resources: {}
           env:
-            - name: DB_HOST
-              value: postgresql
-            - name: DB_USER
-              value: postgres
-            - name: DB_PASS
-              value: {{ .Values.postgresql.auth.postgresPassword | quote }}
+          {{- range $key, $value := .Values.homer.env }}
+            - name: {{ $key | quote }}
+              value: {{ $value | quote }}
+          {{- end }}
           volumeMounts:
-            - mountPath: /usr/local/homer/etc/webapp_config.json
-              name: webapp-conf
-              subPath: webapp_config.json
             - mountPath: /homer-semaphore/.bootstrapped
               name: webapp-conf
               subPath: bootstrapped
@@ -41,7 +36,5 @@ spec:
         configMap:
           name: webapp-conf
           items:
-          - key: webapp_config.json
-            path: webapp_config.json          
           - key: bootstrapped
             path: bootstrapped
