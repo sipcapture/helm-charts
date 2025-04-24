@@ -25,12 +25,48 @@ grafana:
 
 heplifyServer: 
   image: ghcr.io/sipcapture/heplify-server:latest
+  #List of all Environment Variables and default values can be found out on
+  #https://github.com/sipcapture/heplify-server/blob/master/config/config.go
+  #Variables use HEPLIFYSERVER_NameOfParameterInUpperCase
+  env:
+    HEPLIFYSERVER_PROMADDR: "0.0.0.0:9096"
+    HEPLIFYSERVER_DBSHEMA: "homer7"
+    HEPLIFYSERVER_DBDRIVER: "postgres"
+    HEPLIFYSERVER_DBADDR: "postgresql:5432"
+    HEPLIFYSERVER_DBUSER: "postgres"
+    HEPLIFYSERVER_DBPASS: "homerSeven"
+    HEPLIFYSERVER_DBDATATABLE: "homer_data"
+    HEPLIFYSERVER_DBCONFTABLE: "homer_config"
+    HEPLIFYSERVER_LOGLVL: "info"
+    HEPLIFYSERVER_STD: "true"
+
 influxdb: 
   image: influxdb:1.8
   loglevel: info
   storage: 10Gi
+
 homer: 
   image: ghcr.io/sipcapture/homer-app:latest
+  #List of all Environment Variables and default values can be found out on
+  #https://github.com/sipcapture/homer-app/blob/master/docker/docker-entrypoint.d/1
+  env:
+    DB_USER: "postgres"
+    DB_PASS: "homerSeven"
+    DB_HOMER_CONFIG: "homer_config"
+    DB_HOST: "postgresql"
+    DB_PORT: "5432"
+    DB_KEEPALIVE: "true"
+    DB_HOMER_DATA: "homer_data"
+    TSHARK_ACTIVE: "false"
+    TSHARK_BIN: "/usr/bin/tshark"
+    GRAFANA_HOST: "grafana"
+    GRAFANA_PATH: "/grafana"
+    GRAFANA_TOKEN: ""
+    INFLUX_USER: "influx_user"
+    INFLUX_PASS: "influx_password"
+    INFLUX_HOST: "influxdb"
+    HOMER_LOGLEVEL: "debug"
+
   ingress:
     enabled: true # Disable if ingress controller absent or want to deploy using nodeport service only
     hostname: webapp.myimaginaryhost.com

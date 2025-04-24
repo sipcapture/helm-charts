@@ -20,21 +20,14 @@ spec:
       containers:
         - name: heplify-server
           image: {{ .Values.heplifyServer.image }}
-          args: ['./heplify-server', '-config', '/etc/heplify-server.toml']
+          env:
+          {{- range $key, $value := .Values.heplifyServer.env }}
+            - name: {{ $key | quote }}
+              value: {{ $value | quote }}
+          {{- end }}
           ports:
             - containerPort: 9060
               protocol: UDP
             - containerPort: 9096
               protocol: TCP
           resources: {}
-          volumeMounts:
-            - mountPath: /etc/heplify-server.toml
-              name: heplify-server-conf
-              subPath: heplify-server.toml
-      volumes:
-      - name: heplify-server-conf
-        configMap:
-          name: heplify-server-conf
-          items:
-          - key: heplify-server.toml
-            path: heplify-server.toml
