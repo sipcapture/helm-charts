@@ -1,0 +1,18 @@
+# Homer Helmchart on EKS: heplifyServer-webApp-stack 
+This Homer helm chart contains two components - [heplifyServer](https://github.com/sipcapture/heplify-server) and [webApp](https://github.com/sipcapture/homer-app).
+Please refer to the repositories for more information on setting up.
+
+# Run the command to check all values in values.yaml are set correctly
+```
+helm upgrade --install --dry-run --debug -f values.yaml homer .
+```
+
+# Run the upgrade (or install) command to install helm chart
+```
+helm upgrade --install -f values.yaml homer .
+```
+
+# Clean up
+```
+helm uninstall homer
+```

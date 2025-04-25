@@ -1,0 +1,26 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/certificate-arn: {{ toYaml .Values.webApp.annotations.certificateArn }}
+  labels:
+    service: {{ toYaml .Values.webApp.name }}
+    service: {{ toYaml .Values.heplifyServer.name }}
+  name: {{ toYaml .Values.webApp.name }}-ing
+  namespace: {{ toYaml .Values.global.nameSpace }}
+spec:
+  rules:
+    - host: {{ toYaml .Values.webApp.domainName }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ toYaml .Values.webApp.name }}
+                port:
+                  number: 80
+            path: "/"
+            pathType: Prefix

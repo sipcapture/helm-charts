@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: {{ toYaml .Values.heplifyServer.name }}
+  name: {{ toYaml .Values.heplifyServer.name }}
+  namespace: {{ toYaml .Values.global.nameSpace }}
+spec:
+  ports:
+    - name: "9060"
+      port: 9060
+      targetPort: 9060
+    - name: 9060-udp
+      port: 9060
+      protocol: UDP
+      targetPort: 9060
+    - name: "9061"
+      port: 9061
+      targetPort: 9061
+    - name: "9096"
+      port: 9096
+      targetPort: 9096
+    - name: "9090"
+      port: 9090
+      targetPort: 9090
+  type: NodePort
+  selector:
+    service: {{ toYaml .Values.heplifyServer.name }}

@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: {{ toYaml .Values.heplifyServer.name }}
+  name: {{ toYaml .Values.heplifyServer.name }}
+  namespace: {{ toYaml .Values.global.nameSpace }}
+spec:
+  replicas: {{ toYaml .Values.replicaCount }}
+  selector:
+    matchLabels:
+      service: {{ toYaml .Values.heplifyServer.name }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        service: {{ toYaml .Values.heplifyServer.name }}
+    spec:
+{{- if .Values.global.tolerations }}
+      tolerations:
+{{ toYaml .Values.global.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.global.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.global.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - args:
+            - ./heplify-server
+          env:
+            - name: HEPLIFYSERVER_ALEGIDS
+              value: X-CID
+            - name: HEPLIFYSERVER_DBADDR
+              value: {{ toYaml .Values.dataBase.dbhost }}
+            - name: HEPLIFYSERVER_DBBulk
+              value: "2000"
+            - name: HEPLIFYSERVER_DBCONFTABLE
+              value: homer_config
+            - name: HEPLIFYSERVER_DBDATATABLE
+              value: homer_data
+            - name: HEPLIFYSERVER_DBDRIVER
+              value: {{ toYaml .Values.dataBase.dbDriver }}
+            - name: HEPLIFYSERVER_DBDROPDAYS
+              value: "40"
+            - name: HEPLIFYSERVER_DBDropOnStart
+              value: "true"
+            - name: HEPLIFYSERVER_DBPASS
+              value: {{ toYaml .Values.dataBase.dbPasswd }}
+            - name: HEPLIFYSERVER_DBROTATE
+              value: "true"
+            - name: HEPLIFYSERVER_DBSHEMA
+              value: homer7
+            - name: HEPLIFYSERVER_DBUSER
+              value: {{ toYaml .Values.dataBase.dbUser }}
+            - name: HEPLIFYSERVER_DEDUP
+              value: "false"
+            - name: HEPLIFYSERVER_FORCEALEGID
+              value: "true"
+            - name: HEPLIFYSERVER_HEPADDR
+              value: 0.0.0.0:9060
+            - name: HEPLIFYSERVER_HEPTCPADDR
+              value: 0.0.0.0:9061
+            - name: HEPLIFYSERVER_LOGLVL
+              value: info
+            - name: HEPLIFYSERVER_LOGSTD
+              value: "true"
+            - name: HEPLIFYSERVER_PROMADDR
+              value: 0.0.0.0:9096
+            - name: HEPLIFYSERVER_PROMTARGETIP
+              value: {{ toYaml .Values.monitorList.ip }}
+            - name: HEPLIFYSERVER_PROMTARGETNAME
+              value: {{ toYaml .Values.monitorList.friendlyName }}
+            - name: HEPLIFYSERVER_SIPHEADER
+              value: ruri_user,ruri_domain,from_user,from_domain,from_tag,to_user,to_domain,callid,cseq,method,user_agent
+          image: {{ toYaml .Values.heplifyServer.spec.image }}
+          name: {{ toYaml .Values.heplifyServer.name }}
+          ports:
+            - containerPort: 9060
+            - containerPort: 9060
+              protocol: UDP
+            - containerPort: 9061
+            - containerPort: 9096
+            - containerPort: 9090
+          resources: {}
+      restartPolicy: Always
