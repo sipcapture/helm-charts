@@ -15,10 +15,32 @@ spec:
     metadata:
       labels:
         app:  {{ include "heplify.fullname" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/heplify-server-configmap.yaml") . | sha256sum }}
     spec:
       {{- include "heplifyServer.imagePullSecrets" . | nindent 6 }}
+      {{- with .Values.heplifyServer.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.heplifyServer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.heplifyServer.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.heplifyServer.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: heplify-server
+          {{- with .Values.heplifyServer.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: "{{ .Values.heplifyServer.image.registry }}/{{ .Values.heplifyServer.image.repository }}:{{ .Values.heplifyServer.image.tag }}"
           imagePullPolicy: {{ .Values.heplifyServer.image.pullPolicy }}
           args:
@@ -74,12 +96,19 @@ spec:
               value: {{ .Values.heplifyServer.config.dbUsageScheme | quote }}
             - name: HEPLIFYSERVER_DBWORKER
               value: {{ .Values.heplifyServer.config.dbWorker | quote }}
+            - name: HEPLIFYSERVER_LOGLVL
+              value: {{ .Values.heplifyServer.config.logLevel | quote }}
+            - name: HEPLIFYSERVER_LOGDBG
+              value: {{ .Values.heplifyServer.config.logDbg | quote }}
           ports:
             - containerPort: 9060
               protocol: UDP
             - containerPort: 9096
               protocol: TCP
-          resources: {}
+          {{- with .Values.heplifyServer.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - mountPath: /etc/heplify-server.toml
               name: heplify-server-conf

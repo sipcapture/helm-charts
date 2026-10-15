@@ -20,6 +20,18 @@ spec:
         app: {{ include "telegraf.fullname" . }}
     spec:
       {{- include "telegraf.imagePullSecrets" . | nindent 6 }}
+      {{- with .Values.telegraf.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.telegraf.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.telegraf.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - image: "{{ .Values.telegraf.image.registry }}/{{ .Values.telegraf.image.repository }}:{{ .Values.telegraf.image.tag }}"
           imagePullPolicy: {{ .Values.telegraf.image.pullPolicy }}

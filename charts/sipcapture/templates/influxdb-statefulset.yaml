@@ -20,6 +20,18 @@ spec:
         app: {{ include "influxdb.fullname" . }}
     spec:
       {{- include "influxdb.imagePullSecrets" . | nindent 6 }}
+      {{- with .Values.influxdb.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.influxdb.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.influxdb.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - image: "{{ .Values.influxdb.image.registry }}/{{ .Values.influxdb.image.repository }}:{{ .Values.influxdb.image.tag }}"
           imagePullPolicy: {{ .Values.influxdb.image.pullPolicy }}

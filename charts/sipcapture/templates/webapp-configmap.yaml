@@ -18,6 +18,7 @@ data:
       "database_config": {
         "help": "Settings for PGSQL Database (settings)",
         "host": "{{ .Values.postgresql.hostname }}",
+        "sslmode": "{{ .Values.postgresql.sslmode }}",
         "keepalive": true,
         "name": "homer_config",
         "node": "LocalConfig",
@@ -28,6 +29,7 @@ data:
         "localnode": {
           "help": "Settings for PGSQL Database (data)",
           "host": "{{ .Values.postgresql.hostname }}",
+          "sslmode": "{{ .Values.postgresql.sslmode }}",
           "keepalive": true,
           "name": "homer_data",
           "node": "LocalNode",
@@ -66,7 +68,7 @@ data:
         "gzip_static": true,
         "help": "Settings for the HOMER Webapp Server. If you have gzip_static = false, please be sure that your dist directory has uncompressed .js files",
         "host": "0.0.0.0",
-        "port": 80 ,
+        "port": {{ .Values.homer.containerPort }},
         "root": "/usr/local/homer/dist"
       },
       "https_settings": {
