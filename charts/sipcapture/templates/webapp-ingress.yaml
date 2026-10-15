@@ -21,6 +21,9 @@ spec:
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
+  {{- if .Values.homer.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.homer.ingress.ingressClassName }}
+  {{- end }}
   rules:
     - host: {{ required "hostname for the homer portal" .Values.homer.ingress.hostname }}
       http:

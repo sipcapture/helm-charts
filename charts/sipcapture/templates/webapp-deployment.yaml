@@ -15,8 +15,26 @@ spec:
     metadata:
       labels:
         app: {{ include "homer.fullname" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/webapp-configmap.yaml") . | sha256sum }}
     spec:
       {{- include "homer.imagePullSecrets" . | nindent 6 }}
+      {{- with .Values.homer.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.homer.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.homer.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.homer.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
       - name: copy-config
         image: "{{ .Values.homer.image.registry }}/{{ .Values.homer.image.repository }}:{{ .Values.homer.image.tag }}"
@@ -116,15 +134,22 @@ spec:
 
       containers:
         - name: homer-webapp
+          {{- with .Values.homer.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: "{{ .Values.homer.image.registry }}/{{ .Values.homer.image.repository }}:{{ .Values.homer.image.tag }}"
           imagePullPolicy: {{ .Values.homer.image.pullPolicy }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.homer.containerPort }}
           args:
             - /homer-app
             - -database-ssl-mode={{ .Values.postgresql.sslmode }}
             - -webapp-config-path=/usr/local/homer/etc
-          resources: {}
+          {{- with .Values.homer.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             - name: DB_HOST
               value: "{{ .Values.postgresql.hostname }}"

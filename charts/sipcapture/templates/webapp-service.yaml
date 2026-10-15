@@ -27,6 +27,7 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.homer.service.ports.http }}
+      targetPort: {{ .Values.homer.containerPort }}
       {{- if (and (or (eq .Values.homer.service.type "NodePort") (eq .Values.homer.service.type "LoadBalancer")) (not (empty .Values.homer.service.nodePorts.http))) }}
       nodePort: {{ .Values.homer.service.nodePorts.http }}
       {{- else if eq .Values.homer.service.type "ClusterIP" }}
