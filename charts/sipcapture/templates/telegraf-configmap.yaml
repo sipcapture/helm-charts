@@ -1,3 +1,4 @@
+{{- if .Values.telegraf.installOnCluster }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -281,3 +282,4 @@ data:
       allowed_pending_messages = 10000
       percentile_limit = 1000
       # read_buffer_size = 65535
+{{- end }}

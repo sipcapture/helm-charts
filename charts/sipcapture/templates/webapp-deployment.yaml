@@ -39,7 +39,7 @@ spec:
         imagePullPolicy: {{ .Values.homer.image.pullPolicy }}
         env:
           - name: DB_HOST
-            value: "{{ .Values.postgresql.hostname }}"
+            value: "{{ include "postgresql.provisioningHostname" . }}"
           - name: DB_PORT
             value: "{{ default "5432" .Values.postgresql.port }}"
           - name: DB_ROOT_USER
@@ -79,9 +79,7 @@ spec:
             /homer-app -create-homer-user \
                        -database-host=$DB_HOST \
                        -database-port=$DB_PORT \
-                       {{- if eq .Values.postgresql.sslmode "enable" }}
-                       -database-ssl-mode=enable \
-                       {{- end }}
+                       -database-ssl-mode={{ .Values.postgresql.sslmode }} \
                        -database-homer-password=$DB_HOMER_PASSWORD \
                        -database-root-user=$DB_ROOT_USER \
                        -database-root-password=$DB_ROOT_PASSWORD
@@ -89,13 +87,11 @@ spec:
             /homer-app -create-config-db \
                        -database-host=$DB_HOST \
                        -database-port=$DB_PORT \
-                       {{- if eq .Values.postgresql.sslmode "enable" }}
-                       -database-ssl-mode=enable \
-                       {{- end }}
                        -database-homer-user=$DB_HOMER_USER \
                        -database-homer-password=$DB_HOMER_PASSWORD \
                        -database-root-user=$DB_ROOT_USER \
                        -database-root-password=$DB_ROOT_PASSWORD \
+                       -database-ssl-mode={{ .Values.postgresql.sslmode }} \
                        -webapp-config-path=/usr/local/homer/etc
             echo [*] Creating data DB
             /homer-app -create-data-db \
@@ -105,17 +101,13 @@ spec:
                        -database-homer-password=$DB_HOMER_PASSWORD \
                        -database-root-user=$DB_ROOT_USER \
                        -database-root-password=$DB_ROOT_PASSWORD \
-                       {{- if eq .Values.postgresql.sslmode "enable" }}
-                       -database-ssl-mode=enable \
-                       {{- end }}
+                       -database-ssl-mode={{ .Values.postgresql.sslmode }} \
                        -webapp-config-path=/usr/local/homer/etc
             echo [*] Creating homer role
             /homer-app -create-homer-role \
                        -database-host=$DB_HOST \
                        -database-port=$DB_PORT \
-                       {{- if eq .Values.postgresql.sslmode "enable" }}
-                       -database-ssl-mode=enable \
-                       {{- end }}
+                       -database-ssl-mode={{ .Values.postgresql.sslmode }} \
                        -database-root-user=$DB_ROOT_USER \
                        -database-root-password=$DB_ROOT_PASSWORD
         volumeMounts:
@@ -130,14 +122,16 @@ spec:
             - containerPort: 80
           args:
             - /homer-app
-            {{- if eq .Values.postgresql.sslmode "enable" }}
-            - -database-ssl-mode=enable
-            {{- end }}
+            - -database-ssl-mode={{ .Values.postgresql.sslmode }}
             - -webapp-config-path=/usr/local/homer/etc
           resources: {}
           env:
             - name: DB_HOST
               value: "{{ .Values.postgresql.hostname }}"
+            - name: DB_SSL_MODE
+              value: "{{ .Values.postgresql.sslmode }}"
+            - name: DB_PROVISIONING_HOST
+              value: "{{ include "postgresql.provisioningHostname" . }}"
             - name: DB_ROOT_USER
               {{- if .Values.postgresql.auth.existingSecret }}
               valueFrom:

@@ -1,3 +1,4 @@
+{{- if .Values.telegraf.installOnCluster }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -38,3 +39,4 @@ spec:
           items:
           - key: telegraf.conf
             path: telegraf.conf
+{{- end }}

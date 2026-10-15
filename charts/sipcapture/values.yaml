@@ -139,6 +139,10 @@ homer:
 
 postgresql:
   installOnCluster: true
+  hostname: sipcapture-postgresql
+  # sslmode: disable, allow, prefer, require, verify-ca, verify-full
+  sslmode: disable
+  # provisioningHostname: sipcapture-postgresql-primary.namespace.svc.cluster.local
   image:
     repository: bitnamilegacy/postgresql
   fullnameOverride: "sipcapture-postgresql"
@@ -155,3 +159,14 @@ telegraf:
     tag: 1.19
     pullPolicy: IfNotPresent
     pullSecrets: []
+
+# Extra Kubernetes manifests (trusted operators only; supports Helm tpl syntax).
+# Example:
+# extraObjects:
+#   - apiVersion: v1
+#     kind: ConfigMap
+#     metadata:
+#       name: my-extra-config
+#     data:
+#       key: value
+extraObjects: []

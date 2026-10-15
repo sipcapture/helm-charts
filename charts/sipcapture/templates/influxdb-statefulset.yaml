@@ -1,3 +1,4 @@
+{{- if .Values.influxdb.installOnCluster }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -23,9 +24,6 @@ spec:
         - image: "{{ .Values.influxdb.image.registry }}/{{ .Values.influxdb.image.repository }}:{{ .Values.influxdb.image.tag }}"
           imagePullPolicy: {{ .Values.influxdb.image.pullPolicy }}
           name: influxdb
-          env:
-            - name: {{ .Values.influxdb.loglevel| quote }}
-              value: info
           ports:
             - containerPort: 8086
           resources: {}
@@ -55,3 +53,4 @@ spec:
       resources:
         requests:
           storage: {{ .Values.influxdb.storage }}
+{{- end }}

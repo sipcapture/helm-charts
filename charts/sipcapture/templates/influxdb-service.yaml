@@ -1,4 +1,4 @@
-{{- if .Values.influxdb.enabled }}
+{{- if .Values.influxdb.installOnCluster }}
 apiVersion: v1
 kind: Service
 metadata:

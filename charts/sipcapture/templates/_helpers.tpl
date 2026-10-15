@@ -47,6 +47,13 @@ default-password: {{ if $secret }} {{ index $secret.data "default-password" }} {
 {{- end -}}
 
 {{/*
+PostgreSQL hostname for provisioning (superuser) when runtime host differs (e.g. pgBouncer).
+*/}}
+{{- define "postgresql.provisioningHostname" -}}
+{{- .Values.postgresql.provisioningHostname | default .Values.postgresql.hostname | default "sipcapture-postgresql" -}}
+{{- end -}}
+
+{{/*
 Homer pull secrets
 */}}
 {{- define "homer.imagePullSecrets" -}}
