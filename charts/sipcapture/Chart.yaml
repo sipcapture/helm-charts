@@ -1,6 +1,6 @@
 apiVersion: v2
 name: sipcapture
-version: 0.4.0
+version: 0.4.1
 description: HOMER/SIPCAPTURE stack
 home: https://sipcapture.org
 keywords:
@@ -19,6 +19,11 @@ sources:
   - https://github.com/jambonz/helm-charts
 
 dependencies:
+  - name: common
+    version: 2.30.0
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    tags:
+      - bitnami-common
   - name: grafana
     version: 7.0.9
     repository: "https://grafana.github.io/helm-charts"
