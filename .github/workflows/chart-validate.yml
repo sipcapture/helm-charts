@@ -1,0 +1,34 @@
+name: Validate charts
+
+on:
+  pull_request:
+    paths:
+      - "charts/**"
+      - ".github/workflows/chart-validate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "charts/**"
+      - ".github/workflows/chart-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  helm-template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: helm dependency build
+        working-directory: charts/sipcapture
+        run: helm dependency build
+
+      - name: helm template (default values)
+        working-directory: charts/sipcapture
+        run: helm template ci-test . --namespace homer-test > /dev/null
