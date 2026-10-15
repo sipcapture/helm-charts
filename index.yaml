@@ -2,6 +2,43 @@ apiVersion: v1
 entries:
   sipcapture:
   - apiVersion: v2
+    created: "2026-10-15T23:05:47.676672274Z"
+    dependencies:
+    - name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      tags:
+      - bitnami-common
+      version: 2.30.0
+    - condition: grafana.installOnCluster
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 7.0.9
+    - condition: postgresql.installOnCluster
+      name: postgresql
+      repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+      version: 16.7.4
+    description: HOMER/SIPCAPTURE stack
+    digest: e9a347c8d395c57bd2298ff5fdfbdc9cb72e3a34157157dfa7cedda64bba62f6
+    home: https://sipcapture.org
+    keywords:
+    - voip
+    - monitoring
+    - pcap
+    - sip
+    - rtp
+    maintainers:
+    - email: daveh@drachtio.org
+      name: Dave Horton
+    - email: lorenzo.mangani@gmail.com
+      name: Lorenzo Mangani
+    name: sipcapture
+    sources:
+    - https://github.com/sipcapture/helm-charts
+    - https://github.com/jambonz/helm-charts
+    urls:
+    - https://github.com/sipcapture/helm-charts/releases/download/sipcapture-0.5.0/sipcapture-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
     created: "2025-04-22T11:11:46.866067367Z"
     dependencies:
     - condition: grafana.installOnCluster
@@ -107,4 +144,4 @@ entries:
     urls:
     - https://github.com/sipcapture/helm-charts/releases/download/sipcapture-0.1.2/sipcapture-0.1.2.tgz
     version: 0.1.2
-generated: "2025-04-22T11:11:46.866088848Z"
+generated: "2026-10-15T23:05:47.676700838Z"
