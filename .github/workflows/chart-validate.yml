@@ -14,8 +14,13 @@ on:
 permissions:
   contents: read
 
+env:
+  HELM_VERSION: v3.22.1
+  CHART: charts/sipcapture
+  KUBECONFORM_VERSION: v0.6.7
+
 jobs:
-  helm-template:
+  helm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,12 +28,39 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v4
         with:
-          version: v3.14.4
+          version: ${{ env.HELM_VERSION }}
 
-      - name: helm dependency build
-        working-directory: charts/sipcapture
-        run: helm dependency build
+      - name: Add chart repositories
+        run: |
+          helm repo add grafana https://grafana.github.io/helm-charts --force-update
+          helm repo add bitnami https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami --force-update
+          helm repo update
 
-      - name: helm template (default values)
-        working-directory: charts/sipcapture
-        run: helm template ci-test . --namespace homer-test > /dev/null
+      - name: Build chart dependencies
+        run: helm dependency build "${CHART}"
+
+      - name: Lint chart
+        run: helm lint "${CHART}" --with-subcharts
+
+      - name: Install helm-unittest
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version v1.2.1
+
+      - name: Unit tests
+        run: helm unittest "${CHART}"
+
+      - name: Render manifests (default values)
+        run: helm template ci "${CHART}" --namespace homer-test > /tmp/manifest-default.yaml
+
+      - name: Render manifests (optional components disabled)
+        run: |
+          helm template ci "${CHART}" --namespace homer-test \
+            --set grafana.installOnCluster=false \
+            --set influxdb.installOnCluster=false \
+            --set telegraf.installOnCluster=false \
+            --set postgresql.installOnCluster=false > /tmp/manifest-minimal.yaml
+
+      - name: Validate manifests
+        run: |
+          curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar -xz kubeconform
+          ./kubeconform -strict -summary -ignore-missing-schemas \
+            /tmp/manifest-default.yaml /tmp/manifest-minimal.yaml

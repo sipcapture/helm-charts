@@ -95,6 +95,8 @@ heplifyServer:
 
 influxdb:
   installOnCluster: true
+  # Set to reach an external InfluxDB; leave empty to use the bundled subchart service.
+  hostname: ""
   image:
     registry: docker.io
     repository: influxdb
@@ -109,6 +111,9 @@ influxdb:
 
 homer:
   containerPort: 8080
+  # URL of Grafana used by the webapp. Empty derives it from the bundled grafana subchart.
+  grafana:
+    url: ""
   podSecurityContext: {}
   securityContext: {}
   nodeSelector: {}
@@ -176,6 +181,9 @@ postgresql:
   fullnameOverride: "sipcapture-postgresql"
   auth:
     postgresPassword: "homerSeven"
+    # Secret (created by this chart) holding the HOMER application DB user
+    # credentials. Keys: `postgres-user` and `postgres-password`.
+    existingSecretHomer: "postgres-homer-credentials"
     persistence:
       size: 30Gi
 

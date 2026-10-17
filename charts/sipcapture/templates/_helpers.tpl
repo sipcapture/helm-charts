@@ -54,6 +54,38 @@ PostgreSQL hostname for provisioning (superuser) when runtime host differs (e.g.
 {{- end -}}
 
 {{/*
+Namespace used for the monitoring stack. Falls back to the release namespace.
+*/}}
+{{- define "homer.namespace" -}}
+{{- dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) -}}
+{{- end -}}
+
+{{/*
+Grafana fullname. The grafana subchart templates cannot be included from the
+parent chart, so this mirrors the naming logic used by the grafana chart.
+*/}}
+{{- define "homer.grafana.fullname" -}}
+{{- if .Values.grafana.fullnameOverride -}}
+{{- .Values.grafana.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "grafana" .Values.grafana.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Hostname used to reach InfluxDB. Defaults to the bundled subchart service, but
+can be overridden with `influxdb.hostname` when using an external instance.
+*/}}
+{{- define "influxdb.host" -}}
+{{- default (include "influxdb.fullname" .) .Values.influxdb.hostname -}}
+{{- end -}}
+
+{{/*
 Homer pull secrets
 */}}
 {{- define "homer.imagePullSecrets" -}}

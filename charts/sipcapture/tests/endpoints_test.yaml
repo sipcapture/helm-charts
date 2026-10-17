@@ -1,0 +1,37 @@
+suite: sipcapture internal endpoints
+release:
+  name: sipcapture
+  namespace: monitoring
+templates:
+  - templates/webapp-configmap.yaml
+  - templates/telegraf-configmap.yaml
+  - templates/heplify-server-statefulset.yaml
+  - templates/heplify-server-configmap.yaml
+tests:
+  - it: webapp points at the released heplify, grafana and influxdb services
+    template: templates/webapp-configmap.yaml
+    asserts:
+      - matchRegex:
+          path: data["webapp_config.json"]
+          pattern: '"host": "sipcapture-heplify"'
+      - matchRegex:
+          path: data["webapp_config.json"]
+          pattern: '"host": "http://sipcapture-grafana:80"'
+      - matchRegex:
+          path: data["webapp_config.json"]
+          pattern: '"host": "http://sipcapture-influxdb:8086"'
+  - it: telegraf writes to the released influxdb and scrapes the released heplify
+    template: templates/telegraf-configmap.yaml
+    asserts:
+      - matchRegex:
+          path: data["telegraf.conf"]
+          pattern: 'http://sipcapture-influxdb:8086/'
+      - matchRegex:
+          path: data["telegraf.conf"]
+          pattern: 'http://sipcapture-heplify:9096/metrics'
+  - it: heplify statefulset is governed by its own headless service
+    template: templates/heplify-server-statefulset.yaml
+    asserts:
+      - equal:
+          path: spec.serviceName
+          value: sipcapture-heplify

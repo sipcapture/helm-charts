@@ -1,0 +1,26 @@
+suite: sipcapture webapp wiring
+templates:
+  - templates/webapp-deployment.yaml
+  - templates/webapp-configmap.yaml
+release:
+  name: sipcapture
+  namespace: monitoring
+tests:
+  - it: wires the HOMER database user from the generated secret
+    template: templates/webapp-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[1].env[4].name
+          value: DB_HOMER_USER
+      - equal:
+          path: spec.template.spec.initContainers[1].env[4].valueFrom.secretKeyRef.name
+          value: postgres-homer-credentials
+      - equal:
+          path: spec.template.spec.initContainers[1].env[5].valueFrom.secretKeyRef.name
+          value: postgres-homer-credentials
+      - equal:
+          path: spec.template.spec.containers[0].env[5].valueFrom.secretKeyRef.name
+          value: postgres-homer-credentials
+      - equal:
+          path: spec.template.spec.containers[0].env[6].valueFrom.secretKeyRef.name
+          value: postgres-homer-credentials

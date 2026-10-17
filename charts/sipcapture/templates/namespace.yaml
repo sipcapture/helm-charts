@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) | quote }}
+  name: {{ include "homer.namespace" . | quote }}
   labels:
 {{ include "common.labels" . | indent 4 }}
 {{- end }}
