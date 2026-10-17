@@ -6,7 +6,7 @@ metadata:
     app: {{ include "heplify.fullname" . }}
 {{ include "common.labels" . | indent 4 }}
   name: {{ include "heplify.fullname" . }}
-  namespace: {{ dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) | quote }}
+  namespace: {{ include "homer.namespace" . | quote }}
 spec:
   endpoints:
     - interval: {{ .Values.heplifyServer.serviceMonitor.scrapeInterval }}
@@ -17,5 +17,5 @@ spec:
       app: {{ include "heplify.fullname" . }}
   namespaceSelector:
     matchNames:
-      - {{ dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) | quote }}
+      - {{ include "homer.namespace" . | quote }}
 {{- end }}

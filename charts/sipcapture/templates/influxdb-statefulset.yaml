@@ -6,7 +6,7 @@ metadata:
     app: {{ include "influxdb.fullname" . }}
 {{ include "common.labels" . | indent 4 }}
   name: {{ include "influxdb.fullname" . }}
-  namespace: {{ dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) | quote }}
+  namespace: {{ include "homer.namespace" . | quote }}
 spec:
   serviceName: {{ include "influxdb.fullname" . }}
   replicas: 1

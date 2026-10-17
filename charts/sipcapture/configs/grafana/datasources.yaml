@@ -16,7 +16,7 @@ datasources:
   access: proxy
   database: homer
   user: grafana
-  url: http://influxdb:8086
+  url: http://{{ include "influxdb.host" . }}:8086
   jsonData:
     timeInterval: "15s"
   # <bool> allow users to edit datasources from the UI.
@@ -27,7 +27,7 @@ datasources:
   access: proxy
   database: telegraf
   user: grafana
-  url: http://influxdb:8086
+  url: http://{{ include "influxdb.host" . }}:8086
   jsonData:
     timeInterval: "15s"
   # <bool> allow users to edit datasources from the UI.

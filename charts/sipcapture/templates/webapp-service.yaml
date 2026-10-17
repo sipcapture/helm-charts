@@ -5,7 +5,7 @@ metadata:
     app: {{ include "homer.fullname" . }}
 {{ include "common.labels" . | indent 4 }}
   name: {{ include "homer.fullname" . }}
-  namespace: {{ dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) | quote }}
+  namespace: {{ include "homer.namespace" . | quote }}
 spec:
   type: {{ .Values.homer.service.type }}
   {{- if or (eq .Values.homer.service.type "LoadBalancer") (eq .Values.homer.service.type "NodePort") }}

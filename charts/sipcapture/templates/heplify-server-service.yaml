@@ -5,7 +5,7 @@ metadata:
     app: {{ include "heplify.fullname" . }}
 {{ include "common.labels" . | indent 4 }}
   name: {{ include "heplify.fullname" . }}
-  namespace: {{ dig "global" "monitoring" "namespace" .Release.Namespace (.Values | merge (dict)) | quote }}
+  namespace: {{ include "homer.namespace" . | quote }}
 spec:
   type: {{ .Values.heplifyServer.service.type }}
   {{- if or (eq .Values.heplifyServer.service.type "LoadBalancer") (eq .Values.heplifyServer.service.type "NodePort") }}
@@ -21,12 +21,12 @@ spec:
   sessionAffinity: {{ .Values.heplifyServer.service.sessionAffinity }}
   {{- end }}
   {{- if .Values.heplifyServer.service.sessionAffinityConfig }}
-  sessionAffinityConfig: {{- include "common.tplvalues.render" (dict "value" .Values.heplify.service.sessionAffinityConfig "context" $) | nindent 4 }}
+  sessionAffinityConfig: {{- include "common.tplvalues.render" (dict "value" .Values.heplifyServer.service.sessionAffinityConfig "context" $) | nindent 4 }}
   {{- end }}
   ports:
     - name: "heplify-server"
-      port: 9060
-      targetPort: 9060
+      port: {{ .Values.heplifyServer.service.ports.udp }}
+      targetPort: {{ .Values.heplifyServer.service.ports.udp }}
       protocol: UDP
       {{- if (and (or (eq .Values.heplifyServer.service.type "NodePort") (eq .Values.heplifyServer.service.type "LoadBalancer")) (not (empty .Values.heplifyServer.service.nodePorts.udp))) }}
       nodePort: {{ .Values.heplifyServer.service.nodePorts.udp }}
@@ -34,11 +34,11 @@ spec:
       nodePort: null
       {{- end }}
     - name: "stats-scraper"
-      port: 9096
-      targetPort: 9096
+      port: {{ .Values.heplifyServer.service.ports.tcp }}
+      targetPort: {{ .Values.heplifyServer.service.ports.tcp }}
       protocol: TCP
   selector:
     app: {{ include "heplify.fullname" . }}
   {{- if and .Values.heplifyServer.service.clusterIP (eq .Values.heplifyServer.service.type "ClusterIP") }}
-  clusterIP: None
+  clusterIP: {{ .Values.heplifyServer.service.clusterIP }}
   {{- end }}

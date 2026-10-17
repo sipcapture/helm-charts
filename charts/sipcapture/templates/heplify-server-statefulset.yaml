@@ -6,7 +6,7 @@ metadata:
     app:  {{ include "heplify.fullname" . }}
 {{ include "common.labels" . | indent 4 }}
 spec:
-  serviceName: heplify-server
+  serviceName: {{ include "heplify.fullname" . }}
   replicas: 1
   selector:
     matchLabels:
@@ -101,9 +101,9 @@ spec:
             - name: HEPLIFYSERVER_LOGDBG
               value: {{ .Values.heplifyServer.config.logDbg | quote }}
           ports:
-            - containerPort: 9060
+            - containerPort: {{ .Values.heplifyServer.service.ports.udp }}
               protocol: UDP
-            - containerPort: 9096
+            - containerPort: {{ .Values.heplifyServer.service.ports.tcp }}
               protocol: TCP
           {{- with .Values.heplifyServer.resources }}
           resources:
