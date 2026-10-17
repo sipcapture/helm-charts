@@ -1,7 +1,9 @@
 apiVersion: v2
 name: sipcapture
-version: 0.5.0
+version: 0.6.0
 description: HOMER/SIPCAPTURE stack
+icon: https://user-images.githubusercontent.com/1423657/55069501-8348c400-5084-11e9-9931-fefe0f9874a7.png
+kubeVersion: ">=1.23.0-0"
 home: https://sipcapture.org
 keywords:
   - voip 

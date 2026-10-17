@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "sipcapture chart values",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "global": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "grafana": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "postgresql": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "installOnCluster": { "type": "boolean" },
+        "hostname": { "type": "string" },
+        "provisioningHostname": { "type": "string" },
+        "sslmode": {
+          "type": "string",
+          "enum": ["disable", "allow", "prefer", "require", "verify-ca", "verify-full"]
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "postgresUser": { "type": "string" },
+            "postgresPassword": { "type": "string" },
+            "existingSecret": { "type": "string" },
+            "existingSecretHomer": { "type": "string" }
+          }
+        }
+      }
+    },
+    "heplifyServer": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "config": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "influxdb": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "installOnCluster": { "type": "boolean" },
+        "hostname": { "type": "string" },
+        "storage": { "type": "string" }
+      }
+    },
+    "telegraf": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "installOnCluster": { "type": "boolean" }
+      }
+    },
+    "homer": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "containerPort": { "type": "integer" },
+        "grafana": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "url": { "type": "string" }
+          }
+        }
+      }
+    },
+    "extraObjects": {
+      "type": "array"
+    }
+  }
+}
